@@ -1,0 +1,1515 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Рабочее пространство BI-аналитики</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .nav-tabs {
+            display: flex;
+            border-bottom: 2px solid #e0e0e0;
+            margin-bottom: 20px;
+        }
+        .nav-tab {
+            padding: 10px 20px;
+            background: #f8f9fa;
+            border: none;
+            cursor: pointer;
+            margin-right: 5px;
+            border-radius: 5px 5px 0 0;
+            font-weight: bold;
+        }
+        .nav-tab.active {
+            background: #007bff;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .priority-high { border-left: 4px solid #dc3545; }
+        .priority-medium { border-left: 4px solid #ffc107; }
+        .priority-low { border-left: 4px solid #28a745; }
+        .task-item {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+        }
+        .status-todo { background: #fff3cd; }
+        .status-progress { background: #d4edda; }
+        .status-done { background: #d1ecf1; }
+        .status-blocked { background: #f8d7da; }
+        .checkbox-container {
+            display: inline-block;
+            margin-right: 10px;
+        }
+        .notes-section {
+            background: #e9ecef;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+        .notes-input {
+            width: 100%;
+            min-height: 60px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-family: Arial, sans-serif;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #28a745;
+            transition: width 0.3s ease;
+        }
+        .interconnection-box {
+            background: #e3f2fd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #90caf9;
+        }
+        .problem-item {
+            background: #ffebee;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border-left: 3px solid #f44336;
+        }
+        .insight-item {
+            background: #f3e5f5;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border-left: 3px solid #9c27b0;
+        }
+        .deadline {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        h1, h2, h3 { color: #333; }
+        .edit-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .edit-btn:hover {
+            background: #0056b3;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Рабочее пространство BI-аналитики</h1>
+        
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab(event, 'overview')">📊 Общий обзор</button>
+            <button class="nav-tab" onclick="showTab(event, 'pipedrive')">🔗 CRM PipeDrive</button>
+            <button class="nav-tab" onclick="showTab(event, 'looker')">📈 Looker Studio</button>
+            <button class="nav-tab" onclick="showTab(event, 'analytics')">📊 Google Analytics</button>
+            <button class="nav-tab" onclick="showTab(event, 'reports')">📋 Отчеты</button>
+            <button class="nav-tab" onclick="showTab(event, 'upsell')">💰 Допродажи</button>
+            <button class="nav-tab" onclick="showTab(event, 'problems')">⚠️ Проблемы</button>
+        </div>
+
+        <!-- ОБЩИЙ ОБЗОР -->
+        <div id="overview" class="tab-content active">
+            <h2>📊 Общий обзор проекта</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">6</div>
+                    <div>Основных направлений</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">23</div>
+                    <div>Активных задач</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">6</div>
+                    <div>Критических проблем</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">28%</div>
+                    <div>Общий прогресс</div>
+                </div>
+            </div>
+
+            <h3>🎯 Приоритетность направлений</h3>
+            <div class="interconnection-box priority-high">
+                <h4>1. CRM PipeDrive (КРИТИЧНО)</h4>
+                <p><strong>Статус:</strong> Требует немедленного внимания</p>
+                <p><strong>Прогресс:</strong> 40% - данные извлекаются, но нужна автоматизация</p>
+                <p><strong>Блокеры:</strong> Грязные данные, дубли, отсутствие UTM-меток</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 40%;"></div>
+                </div>
+            </div>
+
+            <div class="interconnection-box priority-high">
+                <h4>2. Looker Studio Dashboard (КРИТИЧНО)</h4>
+                <p><strong>Статус:</strong> Базовая версия готова, нужна автоматизация</p>
+                <p><strong>Прогресс:</strong> 60% - визуализации работают, нужно подключить API</p>
+                <p><strong>Зависимости:</strong> Направление 1 (PipeDrive API)</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 60%;"></div>
+                </div>
+            </div>
+
+            <div class="interconnection-box priority-medium">
+                <h4>3. Google Analytics Integration (СРЕДНЕ)</h4>
+                <p><strong>Статус:</strong> Подключено и работает</p>
+                <p><strong>Прогресс:</strong> 80% - нужна доработка меток</p>
+                <p><strong>Проблемы:</strong> Мало UTM-меток, нужна синхронизация с CRM</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 80%;"></div>
+                </div>
+            </div>
+
+            <div class="interconnection-box priority-medium">
+                <h4>4. Отчеты и аналитика (СРЕДНЕ)</h4>
+                <p><strong>Статус:</strong> В планах</p>
+                <p><strong>Прогресс:</strong> 10% - техзадание есть, нужна реализация</p>
+                <p><strong>Зависимости:</strong> Все предыдущие направления</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 10%;"></div>
+                </div>
+            </div>
+
+            <div class="interconnection-box priority-low">
+                <h4>5. Допродажи (Стажеры) (НИЗКО)</h4>
+                <p><strong>Статус:</strong> Делегировано стажерам</p>
+                <p><strong>Прогресс:</strong> 15% - техзадание передано, начальный анализ</p>
+                <p><strong>Зависимости:</strong> После завершения основных задач</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 15%;"></div>
+                </div>
+            </div>
+
+            <div class="interconnection-box priority-low">
+                <h4>6. Excel интеграция (НИЗКО)</h4>
+                <p><strong>Статус:</strong> Получено задание</p>
+                <p><strong>Прогресс:</strong> 5% - нужно изучить таблицу руководителя</p>
+                <p><strong>Зависимости:</strong> Направление 2 (Looker Studio)</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 5%;"></div>
+                </div>
+            </div>
+
+            <h3>⚡ Критические задачи на сегодня</h3>
+            <div class="task-item priority-high">
+                <strong>1. Наладить автоматическое обновление данных из PipeDrive в дашборд</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="critical1"> <label for="critical1">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <textarea class="notes-input" placeholder="Добавить заметки, проблемы или инсайты..."></textarea>
+                </div>
+            </div>
+
+            <div class="task-item priority-high">
+                <strong>2. Исправить воронку продаж - настроить правильный порядок этапов</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="critical2"> <label for="critical2">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <textarea class="notes-input" placeholder="Добавить заметки, проблемы или инсайты..."></textarea>
+                </div>
+            </div>
+
+            <div class="task-item priority-high">
+                <strong>3. Обсудить список меток с Изати и Таней</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="critical3"> <label for="critical3">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <textarea class="notes-input" placeholder="Добавить заметки, проблемы или инсайты..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- CRM PIPEDRIVE -->
+        <div id="pipedrive" class="tab-content">
+            <h2>🔗 CRM PipeDrive</h2>
+            
+            <h3>✅ Что уже сделано</h3>
+            <div class="task-item status-done">
+                <input type="checkbox" checked disabled> Получен API ключ
+            </div>
+            <div class="task-item status-done">
+                <input type="checkbox" checked disabled> Извлечены данные за месяц
+            </div>
+            <div class="task-item status-done">
+                <input type="checkbox" checked disabled> Проведена первичная очистка данных
+            </div>
+            <div class="task-item status-done">
+                <input type="checkbox" checked disabled> Данные выгружены в CSV
+            </div>
+
+            <h3>🔄 Текущие задачи</h3>
+            <div class="task-item priority-high status-todo">
+                <strong>Наладить автоматическое обновление данных (2 раза в день)</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="pipedrive1"> <label for="pipedrive1">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <strong>Детали:</strong> Настроить автоматическую загрузку через API утром и после обеда
+                    <textarea class="notes-input" placeholder="Прогресс, проблемы, решения..."></textarea>
+                </div>
+            </div>
+
+            <div class="task-item priority-high status-todo">
+                <strong>Добавить новый тип лидов - "Лиды из бота"</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="pipedrive2"> <label for="pipedrive2">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <strong>Детали:</strong> Обновить код сортировки для нового типа лидов
+                    <textarea class="notes-input" placeholder="Прогресс, проблемы, решения..."></textarea>
+                </div>
+            </div>
+
+            <div class="task-item priority-medium status-todo">
+                <strong>Исправить фильтр "Нет денег на блокированный счет"</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="pipedrive3"> <label for="pipedrive3">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <strong>Детали:</strong> Фильтровать только дубли и возвраты
+                    <textarea class="notes-input" placeholder="Прогресс, проблемы, решения..."></textarea>
+                </div>
+            </div>
+
+            <div class="task-item priority-high status-todo">
+                <strong>Решить проблему с UTM-метками</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="pipedrive4"> <label for="pipedrive4">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <strong>Детали:</strong> Объединить поле "Источник лида" (от менеджеров) с UTM-метками
+                    <textarea class="notes-input" placeholder="Прогресс, проблемы, решения..."></textarea>
+                </div>
+            </div>
+
+            <div class="task-item priority-high status-progress">
+                <strong>📋 АНАЛИЗ КОДА И ДАННЫХ ✅ ВЫПОЛНЕН</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" checked disabled> <label>Анализ завершен</label>
+                </div>
+                <div class="notes-section">
+                    <strong>📊 НАЙДЕННЫЕ ПРОБЛЕМЫ В КОДЕ:</strong>
+                    <ol>
+                        <li><strong>91 тестовая сделка удалена</strong> - хорошо работает универсальный фильтр</li>
+                        <li><strong>468 дублей от PipeDrive</strong> - подтверждена проблема формы</li>
+                        <li><strong>Лиды из бота</strong> - в title просто "Telegram" + имя</li>
+                        <li><strong>Постоплата</strong> - поле "Форма оплаты" содержит "Постоплата 50%"</li>
+                        <li><strong>Labels хаос</strong> - смешаны сегменты, продукты, партнеры</li>
+                        <li><strong>Дублирование сегментации</strong> - в Labels есть sA-sE отдельно от основного поля</li>
+                    </ol>
+                    
+                    <strong>🎯 СТАТИСТИКА ПОСЛЕ ОЧИСТКИ:</strong>
+                    <ul>
+                        <li>Было: 1207 сделок → Стало: 1069 (-138 тестовых)</li>
+                        <li>468 дублей (44% от всех проигранных!)</li>
+                        <li>614 лидов имеют сегментацию sA-sE</li>
+                        <li>70 лидов имеют Labels (нужна чистка)</li>
+                    </ul>
+                    
+                    <textarea class="notes-input" placeholder="Конкретные рекомендации по улучшению...">✅ Анализ завершен! Все проблемы выявлены и структурированы. Готовы рекомендации для руководства.</textarea>
+                </div>
+            </div>
+
+            <h3>🔥 КРИТИЧЕСКИЕ ПРОБЛЕМЫ ДАННЫХ</h3>
+            <div class="problem-item">
+                <strong>1. Дубли от формы PipeDrive (РЕШЕНА?)</strong>
+                <div class="notes-section">
+                    <p><strong>Проблема:</strong> Форма PipeDrive создавала дубли сделок до середины июня 2025</p>
+                    <p><strong>Механизм дубления:</strong></p>
+                    <ul>
+                        <li>Человек заполняет заявку на сайте → создается сделка</li>
+                        <li>Его перекидывают на форму PipeDrive → создается ЕЩЕ одна сделка</li>
+                        <li>Иногда создается даже больше 2 дублей</li>
+                    </ul>
+                    <p><strong>Как отфильтровать:</strong> lost_reason = "Дубль" (2 варианта)</p>
+                    <p><strong>Статус:</strong> ❓ НУЖНО ПРОВЕРИТЬ - отменили ли форму в середине июня?</p>
+                    <textarea class="notes-input" placeholder="Результат проверки формы PipeDrive...">ЗАДАЧА: Проверить актуальность формы PipeDrive на сайте!</textarea>
+                </div>
+            </div>
+
+            <div class="problem-item">
+                <strong>2. Лиды из бота (НОВЫЙ ТИП)</strong>
+                <div class="notes-section">
+                    <p><strong>Проблема:</strong> Появился новый источник - лиды из бота</p>
+                    <p><strong>Статус:</strong> Не знаем, как отличить по заголовку</p>
+                    <p><strong>Влияние:</strong> Код фильтрации не обновлен</p>
+                    <textarea class="notes-input" placeholder="Исследование заголовков лидов из бота...">TODO: Найти отличительные признаки лидов из бота в данных</textarea>
+                </div>
+            </div>
+
+            <div class="problem-item">
+                <strong>3. Возвраты (исключаются из аналитики)</strong>
+                <div class="notes-section">
+                    <p><strong>Правило:</strong> lost_reason = "Возврат" не считаются лидами</p>
+                    <p><strong>Статус:</strong> ✅ Правило понятно</p>
+                    <textarea class="notes-input" placeholder="Применение фильтра возвратов...">Фильтровать: status = "lost" AND lost_reason = "Возврат"</textarea>
+                </div>
+            </div>
+
+            <div class="problem-item">
+                <strong>6. Тестовые заявки (исключать из аналитики)</strong>
+                <div class="notes-section">
+                    <p><strong>Проблема:</strong> Сотрудники создают тестовые сделки со словом "тест"</p>
+                    <p><strong>Где искать:</strong> Слово "тест" может быть в РАЗНЫХ колонках</p>
+                    <p><strong>Поля для проверки:</strong></p>
+                    <ul>
+                        <li>title (заголовок сделки)</li>
+                        <li>person_name (имя контакта)</li>
+                        <li>org_name (название организации)</li>
+                        <li>Комментарий (hash: d70515f76aba85a94eea44df74366e89e92518ba)</li>
+                        <li>lost_reason (может быть "тест" в причинах)</li>
+                    </ul>
+                    <p><strong>Фильтр:</strong> Исключить сделки содержащие "тест" (регистронезависимо)</p>
+                    <textarea class="notes-input" placeholder="Результаты поиска тестовых сделок...">TODO: Найти ВСЕ поля со словом "тест" и создать универсальный фильтр</textarea>
+                </div>
+            </div>
+
+            <div class="problem-item">
+                <strong>🚨 КРИТИЧЕСКАЯ ПРОБЛЕМА ВЕРОЯТНОСТЕЙ ЭТАПОВ</strong>
+                <div class="notes-section">
+                    <p><strong>🔥 ОБНАРУЖЕНА СЕРЬЕЗНАЯ ПРОБЛЕМА ПРОГНОЗИРОВАНИЯ:</strong></p>
+                    
+                    <details>
+                        <summary><strong>📖 ЧТО ТАКОЕ ВЕРОЯТНОСТИ ЭТАПОВ? (нажми для раскрытия)</strong></summary>
+                        <div style="margin-top: 10px; padding: 10px; background: #f5f5f5; border-radius: 5px;">
+                            <p><strong>Вероятность этапа</strong> = какой % сделок на этом этапе в итоге выигрывается.</p>
+                            
+                            <p><strong>Примеры правильных вероятностей:</strong></p>
+                            <ul>
+                                <li>Из 100 лидов на этапе "Неразобранное" → выигрывается 1 = <strong>1%</strong></li>
+                                <li>Из 100 лидов на этапе "Взят в работу" → выигрывается 10 = <strong>10%</strong></li>
+                                <li>Из 100 лидов на этапе "Консультация" → выигрывается 50 = <strong>50%</strong></li>
+                                <li>Из 100 лидов на этапе "Предоплата" → выигрывается 95 = <strong>95%</strong></li>
+                            </ul>
+                            
+                            <p><strong>💰 Как это влияет на дашборд:</strong></p>
+                            <ul>
+                                <li><strong>Weighted Value</strong> (взвешенная стоимость) = стоимость сделки × вероятность этапа</li>
+                                <li>Используется для прогнозирования продаж</li>
+                                <li>Показывает реальную ожидаемую выручку</li>
+                            </ul>
+                            
+                            <p><strong>📊 Пример расчета:</strong></p>
+                            <div style="background: #e8f4f8; padding: 8px; border-radius: 3px; font-family: monospace;">
+                                Сделка на 1000€ на этапе "Взят в работу"<br>
+                                • Текущая система: 1000€ × 100% = 1000€ (прогноз)<br>
+                                • Правильно должно быть: 1000€ × 10% = 100€ (прогноз)<br>
+                                <strong>Результат: Прогнозы завышены в 10 раз!</strong>
+                            </div>
+                        </div>
+                    </details>
+                    
+                    <p><strong>❌ Текущая ситуация:</strong></p>
+                    <ul>
+                        <li>Только 1 этап "Неразобранное" = 1%</li>
+                        <li>ВСЕ остальные 90 этапов = 100%</li>
+                        <li>Как только лид перешел из "Неразобранного" → система считает его 100% выигрышным!</li>
+                    </ul>
+                    
+                    <p><strong>💡 Что должно быть:</strong></p>
+                    <ul>
+                        <li>Неразобранное: 1%</li>
+                        <li>Взят в работу: 10%</li>
+                        <li>Контакт установлен: 25%</li>
+                        <li>Консультация проведена: 50%</li>
+                        <li>Шаблон договора: 75%</li>
+                        <li>Счет выставлен: 90%</li>
+                        <li>Предоплата получена: 95%</li>
+                    </ul>
+                    
+                    <p><strong>🎯 Влияние на дашборд:</strong></p>
+                    <ul>
+                        <li><strong>Weighted Value</strong> = value × probability</li>
+                        <li>Сейчас почти все сделки считаются как 100% выигрышные</li>
+                        <li><strong>Прогнозы продаж завышены в 2-10 раз!</strong></li>
+                    </ul>
+                    
+                    <textarea class="notes-input" placeholder="Срочность исправления вероятностей...">ВАЖНО: Без правильных вероятностей дашборд дает неверные прогнозы продаж!</textarea>
+                </div>
+            </div>
+
+            <div class="problem-item">
+                <strong>📊 РЕЗУЛЬТАТЫ ПРОВЕРКИ UTM-МЕТОК ⚠️ УХУДШЕНИЕ</strong>
+                <div class="notes-section">
+                    <p><strong>🔍 Проанализированы данные за последние 2 недели (178 сделок):</strong></p>
+                    
+                    <p><strong>📊 Текущая ситуация за последние 2 недели:</strong></p>
+                    <ul>
+                        <li><strong>UTM Source:</strong> 35/178 (19.7%)</li>
+                        <li><strong>GA метки:</strong> 55/178 (30.9%)</li>
+                        <li><strong>Facebook метки:</strong> 2/178 (1.1%) - почти не работают</li>
+                    </ul>
+                    
+                    <p><strong>📈 Сравнение с общими показателями (май-июль):</strong></p>
+                    <ul>
+                        <li><strong>UTM за весь период:</strong> 449/1208 (37.2%)</li>
+                        <li><strong>GA за весь период:</strong> 265/1208 (21.9%)</li>
+                    </ul>
+                    
+                    <p><strong>🎯 ТРЕНД (изменения за последние 2 недели):</strong></p>
+                    <ul>
+                        <li><strong>UTM Source:</strong> -17.5% 📉 <span style="color: red;">ЗНАЧИТЕЛЬНОЕ УХУДШЕНИЕ</span></li>
+                        <li><strong>GA метки:</strong> +9.0% 📈 <span style="color: green;">Улучшение</span></li>
+                    </ul>
+                    
+                    <p><strong>💡 Выводы:</strong></p>
+                    <ul>
+                        <li>❌ <strong>UTM-метки ухудшились</strong> - с 37% до 20%</li>
+                        <li>✅ <strong>GA-интеграция улучшилась</strong> - с 22% до 31%</li>
+                        <li>❌ <strong>Facebook пиксели почти не работают</strong> - только 1%</li>
+                        <li>⚠️ <strong>Проблема не решена</strong> - нужны дополнительные меры</li>
+                    </ul>
+                    
+                    <details>
+                        <summary><strong>📖 Примеры найденных UTM-меток (нажми для раскрытия)</strong></summary>
+                        <div style="margin-top: 10px; padding: 10px; background: #f5f5f5; border-radius: 5px;">
+                            <p><strong>UTM Source:</strong> google_ads, google_ads, google_ads</p>
+                            <p><strong>UTM Medium:</strong> search, search, search</p>
+                            <p><strong>UTM Campaign:</strong> site, site, site</p>
+                            <p><strong>GA метки:</strong> GA1.1.499593748.1752074440, GA1.1.914088653.1744968733</p>
+                            <p><strong>💡 Видно:</strong> UTM-метки работают в основном с Google Ads, но покрытие низкое</p>
+                        </div>
+                    </details>
+                    
+                    <textarea class="notes-input" placeholder="Рекомендации по исправлению UTM...">ВЫВОД: UTM-метки НЕ исправили, ситуация даже ухудшилась. Нужно проверить настройки передачи UTM с сайта в PipeDrive.</textarea>
+                </div>
+            </div>>
+                    </ul>
+                    
+                    <p><strong>📋 Нужно проверить за последние 2 недели:</strong></p>
+                    <ol>
+                        <li>Заполненность utm_source, utm_medium, utm_campaign</li>
+                        <li>Работу GA-интеграции (_ga поле)</li>
+                        <li>Передачу UTM из формы на сайте</li>
+                        <li>Динамику по дням - есть ли улучшения</li>
+                    </ol>
+                    
+                    <textarea class="notes-input" placeholder="Результаты проверки UTM-меток...">TODO: Загрузить актуальные данные и проверить UTM-метки за последние 2 недели</textarea>
+                </div>
+            </div>
+            <div class="insight-item">
+                <strong>🚨 КРИТИЧЕСКАЯ ПРОБЛЕМА ВОРОНКИ!</strong>
+                <div class="notes-section">
+                    <p><strong>Найдена серьезная проблема с настройкой вероятностей:</strong></p>
+                    <ul>
+                        <li>🔴 <strong>91 из 91 этапов</strong> имеют вероятность 100%!</li>
+                        <li>🔴 Исключение: только первый этап "Неразобранное" = 1%</li>
+                        <li>🔴 Это делает прогнозирование невозможным</li>
+                    </ul>
+                    
+                    <p><strong>16 пайплайнов обнаружено:</strong></p>
+                    <ol>
+                        <li><strong>Квалификация и сегментация</strong> (5 этапов)</li>
+                        <li><strong>Консультации (сегмент A и B)</strong> (7 этапов)</li>
+                        <li><strong>Подогрев (сегмент С)</strong> (3 этапа)</li>
+                        <li><strong>Отказы</strong> (4 этапа)</li>
+                        <li><strong>Сопровождение (старый архив)</strong> (15 этапов)</li>
+                        <li><strong>Передача партнерам</strong> (5 этапов)</li>
+                        <li><strong>Сопровождение ВНЖ/ПМЖ</strong> (6 этапов)</li>
+                        <li><strong>Сопровождение Виза D</strong> (6 этапов)</li>
+                        <li><strong>ВОЗВРАТ/ПАУЗА</strong> (3 этапа)</li>
+                        <li><strong>Remote (front/back/сопровождение)</strong> (18 этапов)</li>
+                        <li><strong>Web</strong> (6 этапов)</li>
+                        <li><strong>Доп услуги</strong> (3 этапа)</li>
+                        <li><strong>Жалобы и обращения</strong> (3 этапа)</li>
+                        <li><strong>Тест - сопровождение</strong> (5 этапов)</li>
+                    </ol>
+                    
+                    <textarea class="notes-input" placeholder="План решения проблемы с вероятностями...">СРОЧНО: Нужно пересмотреть настройки вероятностей этапов для корректного прогнозирования в дашборде!</textarea>
+                </div>
+            </div>
+                <div class="notes-section">
+                    <strong>Система сегментации лидов:</strong>
+                    <ul>
+                        <li><strong>sA 🟢:</strong> ≤3 мес, доход ≥1500€, фокус Германия</li>
+                        <li><strong>sB 🔵:</strong> >3 мес, 1000-1500€, Германия + другие</li>
+                        <li><strong>sC 🟡:</strong> >3 мес, <1000€, нет четкого выбора</li>
+                        <li><strong>sD ⚫:</strong> Спам, нецелевой лид</li>
+                        <li><strong>sE ⚪:</strong> Недозвон, некорректный номер</li>
+                    </ul>
+                    
+                    <strong>Причины проигрыша (24 категории):</strong>
+                    <ul>
+                        <li>Дубли, Возвраты, Нет денег на блокированный счет</li>
+                        <li>Не дозвонились, Спам, Нецелевой лид</li>
+                        <li>Дорого, Выбрал конкурента, Другую страну</li>
+                        <li>Перестал идти на контакт, Нет продукта</li>
+                    </ul>
+                    
+                    <strong>Источники лидов (18 каналов):</strong>
+                    <ul>
+                        <li>Facebook, Instagram, YouTube, TikTok, Google, Яндекс</li>
+                        <li>Telegram, Twitter, Партнеры, Рефералы</li>
+                        <li>Lead Hero, Статьи, Инфлюенсеры</li>
+                    </ul>
+                    
+                    <textarea class="notes-input" placeholder="Как использовать эти инсайты в основной аналитике...">Важно: Система такая же, как у стажеров! Можно дать стажерам мои наработки для основной CRM.</textarea>
+                </div>
+            </div>
+
+            <div class="insight-item">
+                <strong>📊 Полная карта пайплайнов</strong>
+                <div class="notes-section">
+                    <p><strong>Основные воронки для дашборда:</strong></p>
+                    
+                    <strong>🎯 Система сегментации лидов:</strong>
+                    <ul>
+                        <li><strong>sA 🟢:</strong> ≤3 мес, доход ≥1500€, фокус Германия</li>
+                        <li><strong>sB 🔵:</strong> >3 мес, 1000-1500€, Германия + другие</li>
+                        <li><strong>sC 🟡:</strong> >3 мес, <1000€, нет четкого выбора</li>
+                        <li><strong>sD ⚫:</strong> Спам, нецелевой лид</li>
+                        <li><strong>sE ⚪:</strong> Недозвон, некорректный номер</li>
+                    </ul>
+                    
+                    <strong>📈 Правильный порядок воронки продаж:</strong>
+                    <ol>
+                        <li><strong>Квалификация:</strong> Неразобранное → Взят в работу → Квалифицирован</li>
+                        <li><strong>Консультации:</strong> Распределен → Контакт → Консультация → Договор → Оплата</li>
+                        <li><strong>Сопровождение:</strong> Документы → Консульство → Виза → ВНЖ → Пластик</li>
+                    </ol>
+                    
+                    <textarea class="notes-input" placeholder="Как настроить правильный порядок этапов в дашборде...">Теперь понятно, почему воронка отображается неправильно - нужно использовать order_nr вместо автосортировки! 
+
+Кастомный порядок предл. Машей: Неразобранное - Взят в работу - Консультация проведена - Шаблон отпр - Счет выставлен - Предоплата получена (согласовать)</textarea>
+                </div>
+            </div>
+                <div class="notes-section">
+                    <p><strong>ИДЕНТИЧНЫЕ СИСТЕМЫ:</strong></p>
+                    <ul>
+                        <li>Квалификация sA-sE - такая же как у стажеров</li>
+                        <li>Проблемы с дублями и lost_reason - аналогичные</li>
+                        <li>Фильтрация данных - те же принципы</li>
+                    </ul>
+                    <textarea class="notes-input" placeholder="Какие решения стажеров применить к основной CRM...">Решение: Стажеры могут использовать те же методы очистки и группировки</textarea>
+                </div>
+            </div>
+
+            <div class="insight-item">
+                <strong>📊 Продуктовая линейка (14 услуг)</strong>
+                <div class="notes-section">
+                    <p><strong>Основные продукты:</strong> Фриланс ВНЖ, Голубая карта, Рабочий ВНЖ, Карта шансов, Воссоединение семьи, Ремоут, Карьерный центр, Консультации (аренда/налоги), IT образование, Немецкий язык</p>
+                    <textarea class="notes-input" placeholder="Анализ продуктовой воронки и кросс-продаж...">Можно построить матрицу переходов между продуктами для допродаж!</textarea>
+                </div>
+            </div>
+            <div class="problem-item">
+                <strong>Грязные данные:</strong> Много дублей в системе
+                <textarea class="notes-input" placeholder="Детали проблемы, возможные решения..."></textarea>
+            </div>
+
+            <div class="problem-item">
+                <strong>Отсутствие UTM-меток:</strong> Менеджеры ставят источники вручную
+                <textarea class="notes-input" placeholder="Детали проблемы, возможные решения..."></textarea>
+            </div>
+
+            <div class="problem-item">
+                <strong>Неполные данные Google Analytics:</strong> Мизерное количество отметок
+                <textarea class="notes-input" placeholder="Детали проблемы, возможные решения..."></textarea>
+            </div>
+
+            <h3>📊 Подготовка к анализу данных</h3>
+            <div class="task-item priority-high status-progress">
+                <strong>Обработка исторических данных CRM</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="pipedrive5"> <label for="pipedrive5">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <strong>📋 Статус:</strong>
+                    <ul>
+                        <li>✅ Получен сырой датасет: 1207 сделок, 182 колонки (01.05-14.07)</li>
+                        <li>⏳ Ожидаются: дополнительные CSV с ID-таблицами</li>
+                        <li>⏳ Ожидаются: детали трудностей и инсайтов</li>
+                        <li>❓ Нужно обсудить с руководством: упрощенная таблица для старых данных</li>
+                    </ul>
+                    <strong>🎯 Цель:</strong> Подготовить данные для автоматизации и загрузки в Google Таблицы/BigQuery
+                    <textarea class="notes-input" placeholder="Прогресс обработки, найденные проблемы...">Готов к анализу! Жду остальные файлы и список проблем.</textarea>
+                </div>
+            </div>
+
+            <div class="task-item priority-high status-todo">
+                <strong>📊 КАСТОМНАЯ ВОРОНКА (требование руководства)</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="looker_funnel"> <label for="looker_funnel">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <strong>🎯 Требуемая воронка продаж (упрощенная):</strong>
+                    <ol>
+                        <li><strong>Все зашедшие лиды</strong> (входная точка)</li>
+                        <li><strong>Взят в работу</strong></li>
+                        <li><strong>Консультация проведена</strong></li>
+                        <li><strong>Шаблон договора отправлен</strong></li>
+                        <li><strong>Счет выставлен</strong></li>
+                        <li><strong>Предоплата получена</strong></li>
+                    </ol>
+                    
+                    <p><strong>📋 Задача:</strong> Создать отдельную визуализацию агрегированной воронки из 16 пайплайнов</p>
+                    <p><strong>🔍 Логика:</strong> Сопоставить этапы разных пайплайнов к единым стадиям</p>
+                    
+                    <textarea class="notes-input" placeholder="Маппинг этапов к кастомной воронке...">Нужно создать mapping table: какие этапы из каких пайплайнов соответствуют каждой стадии кастомной воронки</textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- LOOKER STUDIO -->
+        <div id="looker" class="tab-content">
+    <h2>📈 Looker Studio Dashboard</h2>
+            
+            <h3>✅ Что уже сделано</h3>
+            <div class="task-item status-done">
+                <input type="checkbox" checked disabled> Подключен доступ к Google Analytics
+            </div>
+            <div class="task-item status-done">
+                <input type="checkbox" checked disabled> Созданы базовые визуализации
+            </div>
+            <div class="task-item status-done">
+                <input type="checkbox" checked disabled> Загружены CSV данные за май и июнь
+            </div>
+            <div class="task-item status-done">
+                <input type="checkbox" checked disabled> Настроено автообновление Google Analytics
+            </div>
+
+            <h3>🔄 Текущие задачи</h3>
+            <div class="task-item priority-high status-todo">
+                <strong>Настроить воронку продаж - правильный порядок этапов</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="looker1"> <label for="looker1">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <strong>Детали:</strong> Убрать автоматическую сортировку, настроить логический порядок
+                    <textarea class="notes-input" placeholder="Прогресс, проблемы, решения..."></textarea>
+                </div>
+            </div>
+
+            <div class="task-item priority-high status-todo">
+                <strong>Добавить процент от общего количества лидов</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="looker2"> <label for="looker2">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <strong>Детали:</strong> Для каждого этапа воронки показать % от общего количества лидов периода
+                    <textarea class="notes-input" placeholder="Прогресс, проблемы, решения..."></textarea>
+                </div>
+            </div>
+
+            <div class="task-item priority-medium status-todo">
+                <strong>Добавить суммарное количество лидов по сегментам</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="looker3"> <label for="looker3">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <textarea class="notes-input" placeholder="Прогресс, проблемы, решения..."></textarea>
+                </div>
+            </div>
+
+            <div class="task-item priority-medium status-todo">
+                <strong>Вывести причины проигрыша на дашборд</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="looker4"> <label for="looker4">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <strong>Детали:</strong> Обсудить визуализацию с Изати
+                    <textarea class="notes-input" placeholder="Прогресс, проблемы, решения..."></textarea>
+                </div>
+            </div>
+
+            <div class="task-item priority-low status-todo">
+                <strong>Добавить дашборды из PipeDrive</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="looker5"> <label for="looker5">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <strong>Детали:</strong> Обсудить с Изати какие именно дашборды нужны
+                    <textarea class="notes-input" placeholder="Прогресс, проблемы, решения..."></textarea>
+                </div>
+            </div>
+
+            <h3>🏷️ Все ярлыки для дашборда</h3>
+            <div class="task-item status-todo">
+                <strong>Реализовать систему ярлыков:</strong>
+                <ul>
+                    <li>Всего лидов</li>
+                    <li>Фильтр лидов (-дубли и -возвраты)</li>
+                    <li>Лидов по источникам с UTM метками</li>
+                    <li>Лидов с GA метками</li>
+                    <li>Лидов по источникам от менеджеров</li>
+                    <li>Лидов без пометок источников</li>
+                </ul>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="looker6"> <label for="looker6">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <textarea class="notes-input" placeholder="Прогресс по каждому ярлыку..."></textarea>
+                </div>
+            </div>
+
+            <h3>📊 Интеграция Excel-таблицы руководителя</h3>
+            <div class="task-item priority-medium status-todo">
+                <strong>Перенести расчеты из Excel в автоматический режим</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="looker7"> <label for="looker7">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <strong>Детали:</strong> Изучить таблицу руководителя и воспроизвести расчеты в Looker Studio
+                    <textarea class="notes-input" placeholder="Какие расчеты нужно автоматизировать..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- GOOGLE ANALYTICS -->
+        <div id="analytics" class="tab-content">
+    <h2>📊 Google Analytics Integration</h2>
+            
+            <h3>✅ Что уже сделано</h3>
+            <div class="task-item status-done">
+                <input type="checkbox" checked disabled> Подключено к Looker Studio
+            </div>
+            <div class="task-item status-done">
+                <input type="checkbox" checked disabled> Настроены базовые визуализации
+            </div>
+            <div class="task-item status-done">
+                <input type="checkbox" checked disabled> Автообновление работает
+            </div>
+
+            <h3>🔄 Текущие задачи</h3>
+            <div class="task-item priority-medium status-todo">
+                <strong>Создать ярлыки для автоматических и ручных UTM-меток</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="analytics1"> <label for="analytics1">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <strong>Детали:</strong> Показать сколько UTM-меток пришло автоматически и сколько проставлено вручную
+                    <textarea class="notes-input" placeholder="Прогресс, проблемы, решения..."></textarea>
+                </div>
+            </div>
+
+            <div class="task-item priority-medium status-todo">
+                <strong>Синхронизировать данные GA с полем "Источник лида" из CRM</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="analytics2"> <label for="analytics2">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <strong>Детали:</strong> Объединить автоматические UTM-метки с ручными пометками менеджеров
+                    <textarea class="notes-input" placeholder="Прогресс, проблемы, решения..."></textarea>
+                </div>
+            </div>
+
+            <h3>⚠️ Проблемы</h3>
+            <div class="problem-item">
+                <strong>Мало отметок в Google Analytics:</strong> Мизерное количество данных
+                <textarea class="notes-input" placeholder="Возможные причины и решения..."></textarea>
+            </div>
+
+            <div class="problem-item">
+                <strong>Неполная интеграция с CRM:</strong> Нужна синхронизация источников
+                <textarea class="notes-input" placeholder="Детали проблемы и план решения..."></textarea>
+            </div>
+        </div>
+
+        <!-- ОТЧЕТЫ -->
+        <div id="reports" class="tab-content">
+    <h2>📋 Отчеты и аналитика</h2>
+            
+            <h3>🎯 Структура отчетов по техзаданию</h3>
+            
+            <div class="task-item priority-medium status-todo">
+                <strong>1. Воронка продаж</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="report1"> <label for="report1">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <strong>Требования:</strong>
+                    <ul>
+                        <li>Количество лидов в прогреве</li>
+                        <li>Конверсии из прогрева в оплату</li>
+                        <li>Среднее время в прогреве</li>
+                        <li>Причины отложенного спроса</li>
+                    </ul>
+                    <textarea class="notes-input" placeholder="Прогресс, проблемы, решения..."></textarea>
+                </div>
+            </div>
+
+            <h3>📊 Дополнительные интеграции</h3>
+            <div class="task-item priority-low status-todo">
+                <strong>Подключение рекламных платформ</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="report7"> <label for="report7">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <strong>Источники:</strong>
+                    <ul>
+                        <li>Meta Ads (показы, клики, стоимость)</li>
+                        <li>Google Ads (кампании, креативы, UTM)</li>
+                        <li>TikTok Ads</li>
+                    </ul>
+                    <textarea class="notes-input" placeholder="Статус подключения каждой платформы..."></textarea>
+                </div>
+            </div>
+
+            <div class="task-item priority-low status-todo">
+                <strong>Интеграция с телефонией</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="report8"> <label for="report8">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <strong>Данные:</strong>
+                    <ul>
+                        <li>Количество звонков</li>
+                        <li>Длительность</li>
+                        <li>Менеджер</li>
+                        <li>ID лида</li>
+                    </ul>
+                    <textarea class="notes-input" placeholder="Возможность подключения, API..."></textarea>
+                </div>
+            </div>
+
+            <h3>⚙️ Функциональные требования</h3>
+            <div class="task-item priority-medium status-todo">
+                <strong>Фильтрация и интерфейс</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="report9"> <label for="report9">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <strong>Требования:</strong>
+                    <ul>
+                        <li>Фильтрация по дате, источнику, продукту</li>
+                        <li>Фильтрация по квалификации лида, менеджеру</li>
+                        <li>Ежедневное обновление данных</li>
+                        <li>Экспорт в CSV</li>
+                        <li>Интерфейс на русском языке</li>
+                    </ul>
+                    <textarea class="notes-input" placeholder="Статус реализации каждого требования..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- ДОПРОДАЖИ -->
+        <div id="upsell" class="tab-content">
+    <h2>💰 Допродажи (Проект со стажерами)</h2>
+            
+            <div class="interconnection-box">
+                <h4>🎯 Контекст проекта</h4>
+                <p><strong>Статус:</strong> Делегировано стажерам</p>
+                <p><strong>Приоритет:</strong> Низкий (после основных задач)</p>
+                <p><strong>Срок:</strong> 2-4 недели</p>
+                <p><strong>Польза для основной работы:</strong> Инсайты по клиентской аналитике и CRM</p>
+            </div>
+
+            <h3>📋 1. Анализ текущей клиентской базы</h3>
+            <div class="task-item priority-medium status-progress">
+                <strong>Сегментация клиентов ✅ ЧАСТИЧНО ВЫПОЛНЕНО</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" checked disabled> <label>Начальный анализ завершен</label>
+                </div>
+                <div class="notes-section">
+                    <strong>🎯 Результаты первой встречи:</strong>
+                    <ul>
+                        <li><strong>Всего лидов:</strong> 13,121</li>
+                        <li><strong>Квалифицированных:</strong> 1,058</li>
+                        <li><strong>Проблема:</strong> Квалификация не сквозная</li>
+                        <li><strong>Типы клиентов:</strong> Виза Д, ВНЖ, Доп, ст.архив</li>
+                    </ul>
+                    <textarea class="notes-input" placeholder="Записи с встречи со стажерами...">ПОЛУЧИЛИ РАБОЧУЮ ТАБЛИЦУ! Определили основные фильтры и типы клиентов.</textarea>
+                </div>
+            </div>
+
+            <div class="task-item priority-high status-todo">
+                <strong>🔥 ЗАДАЧИ ДО СЛЕДУЮЩЕЙ ВСТРЕЧИ</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="upsell_next1"> <label for="upsell_next1">Выполнено стажерами</label>
+                </div>
+                <div class="notes-section">
+                    <strong>⚠️ КРИТИЧЕСКИЕ ВОПРОСЫ ДЛЯ РЕШЕНИЯ:</strong>
+                    <div class="problem-item">
+                        <strong>1. Фильтрация по лост-ризон:</strong> Считать ли их клиентами? Кого фильтровать по дублям и возвратам?
+                    </div>
+                    <div class="problem-item">
+                        <strong>2. Закрытые сделки:</strong> Показывает "won" + "lost-reason" - проверить логику
+                    </div>
+                    <div class="problem-item">
+                        <strong>3. Тип запроса:</strong> Данные есть только в 12 сделках из всех!
+                    </div>
+                    <textarea class="notes-input" placeholder="Мои заметки по критическим вопросам и их влиянию на основную аналитику..."></textarea>
+                </div>
+            </div>
+
+            <div class="task-item priority-high status-todo">
+                <strong>Задачи на следующую встречу со стажерами</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="upsell2"> <label for="upsell2">Все задачи выполнены</label>
+                </div>
+                <div class="notes-section">
+                    <strong>📝 ЧТО ДЕЛАТЬ:</strong>
+                    <ol>
+                        <li><strong>Группировка по типу запроса:</strong> Сгруппировать и проанализировать с GPT возможность ренейминга</li>
+                        <li><strong>Частота обращений:</strong> Подсчитать обращения за допуслугами</li>
+                        <li><strong>Потенциал допродаж:</strong> Выделить клиентов с 1-2 услугами</li>
+                        <li><strong>Презентация:</strong> Продумать формат представления результатов</li>
+                        <li><strong>LTV расчеты:</strong> По полученным группам</li>
+                    </ol>
+                    <textarea class="notes-input" placeholder="Прогресс по каждой задаче, вопросы от стажеров..."></textarea>
+                </div>
+            </div>
+
+            <h3>🔍 Система квалификации (важно для основной работы!)</h3>
+            <div class="insight-item">
+                <strong>Критерии квалификации лидов</strong>
+                <div class="notes-section">
+                    <p><strong>sA:</strong> Готов ≤3 мес, доход ≥1500€, фокус на Германию/есть оффер</p>
+                    <p><strong>sB:</strong> Готов >3 мес, доход 1000-1500€, Германия + другие страны</p>
+                    <p><strong>sC:</strong> Готов >3 мес, доход <1000€, нет четкого выбора</p>
+                    <p><strong>sD:</strong> Спам, нецелевой лид</p>
+                    <p><strong>sE:</strong> Недозвон, некорректный номер, тест</p>
+                    <textarea class="notes-input" placeholder="Как эта квалификация поможет в основной CRM-аналитике и воронке продаж...">⚡ ИНСАЙТ: Такая система может быть полезна для основного дашборда - поможет сегментировать лидов по качеству!</textarea>
+                </div>
+            </div>
+
+            <div class="task-item priority-medium status-todo">
+                <strong>Расчет LTV клиентов (ПО ГРУППАМ)</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="upsell3"> <label for="upsell3">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <strong>⚡ НОВОЕ ЗАДАНИЕ:</strong> Считать по полученным группам клиентов
+                    <ul>
+                        <li>Пожизненная ценность по типам (Виза Д, ВНЖ, Доп, ст.архив)</li>
+                        <li>Какие услуги покупаются вместе</li>
+                        <li>Связать с квалификацией sA/sB/sC</li>
+                    </ul>
+                    <textarea class="notes-input" placeholder="Результаты LTV-анализа, применение для воронки продаж..."></textarea>
+                </div>
+            </div>
+
+            <h3>⚠️ Проблемы, найденные стажерами</h3>
+            <div class="problem-item">
+                <strong>1. Неполная квалификация</strong>
+                <div class="notes-section">
+                    <p><strong>Проблема:</strong> Из 13,121 лидов квалифицировано только 1,058</p>
+                    <p><strong>Влияние на основную работу:</strong> Аналогичная проблема может быть в основной CRM</p>
+                    <textarea class="notes-input" placeholder="Как решить проблему неполной квалификации в основной системе..."></textarea>
+                </div>
+            </div>
+
+            <div class="problem-item">
+                <strong>2. Отсутствие данных по типу запроса</strong>
+                <div class="notes-section">
+                    <p><strong>Проблема:</strong> Данные есть только в 12 сделках из всех</p>
+                    <p><strong>Решение стажеров:</strong> Группировка + анализ с GPT для ренейминга</p>
+                    <textarea class="notes-input" placeholder="Как избежать подобных проблем в основной аналитике..."></textarea>
+                </div>
+            </div>
+
+            <div class="problem-item">
+                <strong>3. Логика фильтрации lost-reason</strong>
+                <div class="notes-section">
+                    <p><strong>Проблема:</strong> Неясно, считать ли lost-reason клиентами</p>
+                    <p><strong>Аналогия:</strong> Похожая проблема с фильтром "Нет денег на блокированный счет" в основной работе</p>
+                    <textarea class="notes-input" placeholder="Принципы фильтрации для основной CRM-аналитики..."></textarea>
+                </div>
+            </div>
+
+            <h3>📊 2. Анализ эффективности допуслуг</h3>
+            <div class="task-item priority-medium status-todo">
+                <strong>ABC-анализ услуг</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="upsell4"> <label for="upsell4">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <strong>Определить:</strong>
+                    <ul>
+                        <li>Самые прибыльные и популярные допуслуги</li>
+                        <li>Услуги с низкой конверсией</li>
+                        <li>Связанные продажи</li>
+                    </ul>
+                    <textarea class="notes-input" placeholder="Результаты ABC-анализа, применение для основной аналитики..."></textarea>
+                </div>
+            </div>
+
+            <div class="task-item priority-medium status-todo">
+                <strong>Анализ чеков и выручки</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="upsell5"> <label for="upsell5">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <strong>Метрики:</strong> Средний чек, доля допуслуг в общей выручке
+                    <textarea class="notes-input" placeholder="Инсайты по монетизации, полезные для основных отчетов..."></textarea>
+                </div>
+            </div>
+
+            <h3>🔮 3. Прогнозирование спроса и триггеры</h3>
+            <div class="task-item priority-medium status-todo">
+                <strong>Оптимальные моменты для допродаж</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="upsell6"> <label for="upsell6">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <strong>Примеры:</strong> Через 1 месяц после получения визы
+                    <textarea class="notes-input" placeholder="Найденные временные паттерны..."></textarea>
+                </div>
+            </div>
+
+            <div class="task-item priority-medium status-todo">
+                <strong>Система триггеров</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="upsell7"> <label for="upsell7">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <strong>Примеры:</strong> Клиент с детьми → консультация по школам
+                    <textarea class="notes-input" placeholder="Список выявленных триггеров..."></textarea>
+                </div>
+            </div>
+
+            <div class="task-item priority-medium status-todo">
+                <strong>Сезонное прогнозирование</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="upsell8"> <label for="upsell8">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <strong>Методы:</strong> Анализ временных рядов, логистическая регрессия
+                    <textarea class="notes-input" placeholder="Сезонные паттерны спроса..."></textarea>
+                </div>
+            </div>
+
+            <h3>📊 4. Дашборд мониторинга допродаж</h3>
+            <div class="task-item priority-low status-todo">
+                <strong>Разработка дашборда</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="upsell9"> <label for="upsell9">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <strong>Метрики для отслеживания:</strong>
+                    <ul>
+                        <li>Конверсии в допродажи</li>
+                        <li>Средний чек</li>
+                        <li>Доля повторных клиентов в выручке</li>
+                    </ul>
+                    <strong>Платформа:</strong> Google Data Studio/Tableau/Power BI
+                    <textarea class="notes-input" placeholder="Прогресс создания дашборда, полезные элементы для основной работы..."></textarea>
+                </div>
+            </div>
+
+            <div class="task-item priority-low status-todo">
+                <strong>Автоматические отчеты</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="upsell10"> <label for="upsell10">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <strong>Настройка:</strong> Еженедельные/ежемесячные отчеты
+                    <textarea class="notes-input" placeholder="Система автоотчетности..."></textarea>
+                </div>
+            </div>
+
+            <h3>🧪 5. A/B-тестирование</h3>
+            <div class="task-item priority-low status-todo">
+                <strong>Тестирование каналов коммуникации</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="upsell11"> <label for="upsell11">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <strong>Каналы:</strong> Email, чат-бот, звонок
+                    <textarea class="notes-input" placeholder="Результаты тестирования эффективности каналов..."></textarea>
+                </div>
+            </div>
+
+            <div class="task-item priority-low status-todo">
+                <strong>Тестирование скриптов предложений</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="upsell12"> <label for="upsell12">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <strong>Варианты:</strong> "Вам может быть полезно" vs "90% клиентов покупают эту услугу"
+                    <textarea class="notes-input" placeholder="Эффективность разных подходов..."></textarea>
+                </div>
+            </div>
+
+            <h3>📈 Работа со стажерами</h3>
+            <div class="task-item priority-medium status-progress">
+                <strong>Координация и менторинг</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="upsell13"> <label for="upsell13">Задача актуальна</label>
+                </div>
+                <div class="notes-section">
+                    <strong>Мои задачи:</strong>
+                    <ul>
+                        <li>Постановка задач стажерам</li>
+                        <li>Контроль прогресса</li>
+                        <li>Извлечение инсайтов для основной работы</li>
+                        <li>Помощь в сложных вопросах</li>
+                    </ul>
+                    <textarea class="notes-input" placeholder="Прогресс стажеров, вопросы, которые они задают, полезные находки..."></textarea>
+                </div>
+            </div>
+
+            <h3>💡 Синергия с основной работой</h3>
+            <div class="insight-item">
+                <strong>🔥 КРИТИЧЕСКИЕ ИНСАЙТЫ для CRM-аналитики</strong>
+                <div class="notes-section">
+                    <p><strong>1. Проблема квалификации:</strong> Только 8% лидов квалифицированы - нужно проверить в основной CRM</p>
+                    <p><strong>2. Фильтрация данных:</strong> Логика работы с lost-reason применима к основным фильтрам</p>
+                    <p><strong>3. Типизация клиентов:</strong> Система sA/sB/sC может улучшить основную воронку</p>
+                    <textarea class="notes-input" placeholder="Как применить найденные проблемы и решения в основной BI-системе...">⚡ Стажеры нашли те же проблемы, что и у меня в основной работе! Их методы решения можно использовать.</textarea>
+                </div>
+            </div>
+
+            <div class="insight-item">
+                <strong>Методы очистки данных от стажеров</strong>
+                <div class="notes-section">
+                    <textarea class="notes-input" placeholder="Какие методы фильтрации и группировки они используют, что можно взять для PipeDrive...">Их подход к фильтрации pipeline name может помочь с очисткой основных данных.</textarea>
+                </div>
+            </div>
+
+            <div class="insight-item">
+                <strong>Улучшение основной сегментации</strong>
+                <div class="notes-section">
+                    <textarea class="notes-input" placeholder="Как их сегментация клиентов поможет улучшить основные дашборды...">Система квалификации sA-sE может стать основой для ярлыков в основном дашборде!</textarea>
+                </div>
+            </div>
+
+            <h3>📅 Итоговые результаты (2-4 недели)</h3>
+            <div class="task-item priority-low status-todo">
+                <strong>1. Отчет по сегментации клиентов</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="upsell_result1"> <label for="upsell_result1">Готов</label>
+                </div>
+            </div>
+
+            <div class="task-item priority-low status-todo">
+                <strong>2. Рекомендации по упаковке услуг</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="upsell_result2"> <label for="upsell_result2">Готов</label>
+                </div>
+            </div>
+
+            <div class="task-item priority-low status-todo">
+                <strong>3. Дашборд для мониторинга эффективности</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="upsell_result3"> <label for="upsell_result3">Готов</label>
+                </div>
+            </div>
+
+            <div class="task-item priority-low status-todo">
+                <strong>4. Прототип триггерной системы</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="upsell_result4"> <label for="upsell_result4">Готов</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- ПРОБЛЕМЫ -->
+        <div id="problems" class="tab-content">
+    <h2>⚠️ Проблемы и блокеры</h2>
+            
+            <h3>🔥 Критические проблемы</h3>
+            <div class="problem-item">
+                <strong>1. Грязные данные в PipeDrive</strong>
+                <div class="notes-section">
+                    <p><strong>Описание:</strong> Много дублей в CRM-системе</p>
+                    <p><strong>Влияние:</strong> Искажение аналитики, неточные отчеты</p>
+                    <p><strong>Статус:</strong> Требует обсуждения с командой</p>
+                    <textarea class="notes-input" placeholder="Детали проблемы, примеры дублей, возможные решения..."></textarea>
+                </div>
+            </div>
+
+            <div class="problem-item">
+                <strong>2. Отсутствие UTM-меток</strong>
+                <div class="notes-section">
+                    <p><strong>Описание:</strong> Менеджеры ставят источники лидов вручную</p>
+                    <p><strong>Влияние:</strong> Невозможно точно отследить эффективность каналов</p>
+                    <p><strong>Статус:</strong> Нужно объединить автоматические и ручные источники</p>
+                    <textarea class="notes-input" placeholder="Как часто отсутствуют метки, какие источники чаще всего без меток..."></textarea>
+                </div>
+            </div>
+
+            <div class="problem-item">
+                <strong>3. Неполная интеграция Google Analytics</strong>
+                <div class="notes-section">
+                    <p><strong>Описание:</strong> Мизерное количество отметок в GA</p>
+                    <p><strong>Влияние:</strong> Неполная картина трафика и конверсий</p>
+                    <p><strong>Статус:</strong> Нужно выяснить причины</p>
+                    <textarea class="notes-input" placeholder="Возможные причины малого количества данных в GA..."></textarea>
+                </div>
+            </div>
+
+            <div class="problem-item">
+                <strong>4. Неразбериха с метками</strong>
+                <div class="notes-section">
+                    <p><strong>Описание:</strong> Полная неразбериха с системой меток</p>
+                    <p><strong>Влияние:</strong> Невозможно создать точную аналитику</p>
+                    <p><strong>Статус:</strong> Требует обсуждения с Изати и Таней</p>
+                    <textarea class="notes-input" placeholder="Какие именно метки вызывают проблемы, примеры..."></textarea>
+                </div>
+            </div>
+
+            <div class="problem-item">
+                <strong>5. Неправильный фильтр блокированных счетов</strong>
+                <div class="notes-section">
+                    <p><strong>Описание:</strong> Фильтр "Нет денег на блокированный счет" работает неправильно</p>
+                    <p><strong>Влияние:</strong> Искажение статистики по причинам отказов</p>
+                    <p><strong>Статус:</strong> Нужно настроить фильтрацию только дублей и возвратов</p>
+                    <textarea class="notes-input" placeholder="Как именно работает сейчас, что нужно исправить..."></textarea>
+                </div>
+            </div>
+
+            <div class="problem-item">
+                <strong>6. Отсутствие автоматизации</strong>
+                <div class="notes-section">
+                    <p><strong>Описание:</strong> Данные обновляются вручную через CSV</p>
+                    <p><strong>Влияние:</strong> Трудозатратно, риск ошибок, неактуальные данные</p>
+                    <p><strong>Статус:</strong> Критично - нужно настроить автоматическое обновление</p>
+                    <textarea class="notes-input" placeholder="Какие процессы нужно автоматизировать в первую очередь..."></textarea>
+                </div>
+            </div>
+
+            <h3>💡 Инсайты и находки</h3>
+            <div class="insight-item">
+                <strong>Успешное подключение Google Analytics</strong>
+                <div class="notes-section">
+                    <p>Подключение GA к Looker Studio прошло успешно, автообновление работает стабильно</p>
+                    <textarea class="notes-input" placeholder="Что можно использовать в других интеграциях..."></textarea>
+                </div>
+            </div>
+
+            <div class="insight-item">
+                <strong>Эффективная очистка данных</strong>
+                <div class="notes-section">
+                    <p>Методы очистки данных из PipeDrive показали хорошие результаты</p>
+                    <textarea class="notes-input" placeholder="Какие методы очистки самые эффективные..."></textarea>
+                </div>
+            </div>
+
+            <div class="insight-item">
+                <strong>Потенциал для улучшения</strong>
+                <div class="notes-section">
+                    <textarea class="notes-input" placeholder="Новые идеи, возможности для оптимизации..."></textarea>
+                </div>
+            </div>
+
+            <h3>❓ Вопросы для обсуждения</h3>
+            <div class="task-item priority-high status-todo">
+                <strong>Обсуждение с Изати и Таней</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="question1"> <label for="question1">Обсуждено</label>
+                </div>
+                <div class="notes-section">
+                    <strong>Вопросы:</strong>
+                    <ul>
+                        <li>Система меток - как упорядочить?</li>
+                        <li>Визуализация причин проигрыша</li>
+                        <li>Какие дашборды из PipeDrive нужны?</li>
+                        <li>Приоритеты в разработке отчетов</li>
+                    </ul>
+                    <textarea class="notes-input" placeholder="Результаты обсуждения, принятые решения..."></textarea>
+                </div>
+            </div>
+
+            <div class="task-item priority-medium status-todo">
+                <strong>Техническое обсуждение с командой</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="question2"> <label for="question2">Обсуждено</label>
+                </div>
+                <div class="notes-section">
+                    <strong>Вопросы:</strong>
+                    <ul>
+                        <li>Возможности API PipeDrive</li>
+                        <li>Частота обновления данных</li>
+                        <li>Доступы к рекламным кабинетам</li>
+                        <li>Интеграция с телефонией</li>
+                    </ul>
+                    <textarea class="notes-input" placeholder="Результаты обсуждения, технические ограничения..."></textarea>
+                </div>
+            </div>
+
+            <h3>📅 Дедлайны и временные рамки</h3>
+            <div class="task-item priority-high">
+                <strong>Срочные задачи (до конца недели):</strong>
+                <ul>
+                    <li>Автоматизация PipeDrive API</li>
+                    <li>Исправление воронки продаж</li>
+                    <li>Обсуждение системы меток</li>
+                </ul>
+                <div class="notes-section">
+                    <textarea class="notes-input" placeholder="Планы по реализации, возможные риски..."></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(event, tabId) {
+            // Скрыть все вкладки
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Убрать активный класс у всех кнопок
+            const buttons = document.querySelectorAll('.nav-tab');
+            buttons.forEach(button => button.classList.remove('active'));
+            
+            // Показать выбранную вкладку
+            document.getElementById(tabId).classList.add('active');
+            
+            // Добавить активный класс к нажатой кнопке
+            event.target.classList.add('active');
+        }
+
+        // Сохранение данных при изменении
+        document.addEventListener('change', function(e) {
+            if (e.target.type === 'checkbox' || e.target.tagName === 'TEXTAREA') {
+                console.log('Данные изменены:', e.target.id, e.target.value || e.target.checked);
+            }
+        });
+
+        // Автосохранение заметок
+        document.addEventListener('input', function(e) {
+            if (e.target.tagName === 'TEXTAREA') {
+                clearTimeout(e.target.saveTimeout);
+                e.target.saveTimeout = setTimeout(() => {
+                    console.log('Автосохранение заметки:', e.target.value);
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html></strong>
+                    <ul>
+                        <li>Количество лидов на каждом этапе</li>
+                        <li>Конверсии между этапами</li>
+                        <li>Среднее время прохождения этапов</li>
+                        <li>Разбивка по менеджерам/продуктам/источникам</li>
+                    </ul>
+                    <textarea class="notes-input" placeholder="Прогресс, проблемы, решения..."></textarea>
+                </div>
+            </div>
+
+            <div class="task-item priority-medium status-todo">
+                <strong>2. Маркетинговая эффективность</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="report2"> <label for="report2">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <strong>Требования:</strong>
+                    <ul>
+                        <li>CPL / CPA</li>
+                        <li>Количество заявок по каналам и кампаниям</li>
+                        <li>Количество квалифицированных лидов (sA/sB)</li>
+                        <li>Выручка по источнику</li>
+                        <li>ROMI</li>
+                    </ul>
+                    <textarea class="notes-input" placeholder="Прогресс, проблемы, решения..."></textarea>
+                </div>
+            </div>
+
+            <div class="task-item priority-medium status-todo">
+                <strong>3. PnL по продуктам</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="report3"> <label for="report3">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <strong>Требования:</strong>
+                    <ul>
+                        <li>Доход по каждому продукту</li>
+                        <li>Количество лидов</li>
+                        <li>Стоимость привлечения</li>
+                        <li>Прибыль</li>
+                        <li>Средний чек</li>
+                    </ul>
+                    <textarea class="notes-input" placeholder="Прогресс, проблемы, решения..."></textarea>
+                </div>
+            </div>
+
+            <div class="task-item priority-medium status-todo">
+                <strong>4. Аналитика по менеджерам</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="report4"> <label for="report4">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <strong>Требования:</strong>
+                    <ul>
+                        <li>Количество обработанных лидов</li>
+                        <li>Конверсии по этапам</li>
+                        <li>Дозвоняемость</li>
+                        <li>Среднее время отклика</li>
+                        <li>Общая сумма оплат</li>
+                    </ul>
+                    <textarea class="notes-input" placeholder="Прогресс, проблемы, решения..."></textarea>
+                </div>
+            </div>
+
+            <div class="task-item priority-medium status-todo">
+                <strong>5. Причины проигрыша</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="report5"> <label for="report5">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <strong>Требования:</strong>
+                    <ul>
+                        <li>Топ-5 причин</li>
+                        <li>Частота по неделям</li>
+                        <li>Разбивка по источникам и менеджерам</li>
+                    </ul>
+                    <textarea class="notes-input" placeholder="Прогресс, проблемы, решения..."></textarea>
+                </div>
+            </div>
+
+            <div class="task-item priority-medium status-todo">
+                <strong>6. Прогрев</strong>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="report6"> <label for="report6">Выполнено</label>
+                </div>
+                <div class="notes-section">
+                    <strong>Требования:
